@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- 微信分享卡片信息 -->
+    <meta property="og:title" content="彼岸人格诊断 - 测测你的尼采人格">
+    <meta property="og:description" content="13道题目，带你穿越永恒轮回的幻觉。上帝死了，而我们还活着——这是更大的悲剧。">
+    <meta property="og:image" content="https://via.placeholder.com/300x300/1a0f1a/9b7cb6?text=彼岸">
+    <meta name="description" content="基于尼采哲学的幽默人格测试。测测你是末人、骆驼、狮子还是孩子？">
+
+    <title>彼岸人格诊断 - 测测你的尼采人格</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
+                linear-gradient(135deg, #0f0a14 0%, #1a0f1a 25%, #1f1628 50%, #2d1f2d 75%, #0f0a14 100%);
+            background-blend-mode: overlay, normal;
+            font-family: 'Noto Serif SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', serif;
+            color: #c9b8d4;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(201, 184, 212, 0.02) 2px, rgba(201, 184, 212, 0.02) 4px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 15px 40px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            color: #e8d4f0;
+            text-shadow: 0 0 30px rgba(201, 184, 212, 0.4), 3px 3px 0 rgba(100, 50, 100, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 0.8rem;
+            color: #8b7355;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-style: italic;
+        }
+
+        .header .nietzsche-quote {
+            font-size: 0.9rem;
+            color: #9b7cb6;
+            margin-top: 15px;
+            font-style: italic;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+            padding: 0 15px;
+        }
+
+        .intro-card, .question-card, .result-card {
+            background: linear-gradient(145deg, rgba(30, 20, 30, 0.95), rgba(20, 12, 20, 0.98));
+            border: 2px solid transparent;
+            border-image: linear-gradient(135deg, #6b4c7a 0%, #9b7cb6 50%, #6b4c7a 100%) 1;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(201, 184, 212, 0.1);
+            animation: brushStroke 0.8s ease-out forwards;
+        }
+
+        .intro-card::before, .question-card::before, .result-card::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 20px;
+            height: 20px;
+            border-top: 2px solid #9b7cb6;
+            border-left: 2px solid #9b7cb6;
+        }
+
+        .intro-card::after, .question-card::after, .result-card::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            border-bottom: 2px solid #9b7cb6;
+            border-right: 2px solid #9b7cb6;
+        }
+
+        .question-number {
+            font-size: 0.75rem;
+            color: #8b7355;
+            letter-spacing: 0.15em;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            color: #e8d4f0;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .option {
+            display: block;
+            width: 100%;
+            padding: 15px 18px;
+            margin: 10px 0;
+            background: rgba(20, 15, 20, 0.8);
+            border: 1px solid #4a3a4a;
+            color: #a090a0;
+            font-family: 'Noto Serif SC', -apple-system, BlinkMacSystemFont, serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            border-radius: 4px;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .option:active {
+            border-color: #9b7cb6;
+            background: rgba(155, 124, 182, 0.15);
+            color: #e8d4f0;
+            transform: scale(0.98);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 35px;
+            background: transparent;
+            border: 2px solid #9b7cb6;
+            color: #e8d4f0;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            border-radius: 4px;
+            -webkit-tap-highlight-color: rgba(155, 124, 182, 0.3);
+        }
+
+        .btn:active {
+            background: rgba(155, 124, 182, 0.3);
+            transform: scale(0.96);
+        }
+
+        .btn-secondary {
+            background: rgba(155, 124, 182, 0.1);
+            border: 1px solid #6b4c7a;
+            font-size: 0.9rem;
+            padding: 12px 25px;
+            margin: 5px;
+        }
+
+        .result-type {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .result-type .type-code {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #e8d4f0;
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 30px rgba(201, 184, 212, 0.5);
+        }
+
+        .result-type .type-name {
+            font-size: 1.5rem;
+            color: #9b7cb6;
+            margin-top: 8px;
+        }
+
+        .result-type .type-sub {
+            font-size: 0.9rem;
+            color: #7a6a7a;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .result-desc {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #b0a0b0;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .result-quote {
+            font-style: italic;
+            color: #9b7cb6;
+            border-left: 3px solid #6b4c7a;
+            padding-left: 15px;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .will-to-power {
+            background: rgba(20, 15, 20, 0.6);
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #3a2a3a;
+            border-radius: 4px;
+        }
+
+        .will-to-power .label {
+            font-size: 0.75rem;
+            color: #8b7355;
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+        }
+
+        .will-to-power .value {
+            font-size: 1rem;
+            color: #e8d4f0;
+            line-height: 1.5;
+        }
+
+        .share-section {
+            background: rgba(155, 124, 182, 0.1);
+            border: 1px solid #6b4c7a;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .share-title {
+            font-size: 1rem;
+            color: #e8d4f0;
+            margin-bottom: 15px;
+        }
+
+        .share-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(30, 20, 30, 0.98);
+            border: 1px solid #9b7cb6;
+            color: #e8d4f0;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(100, 80, 100, 0.3);
+            margin-bottom: 20px;
+            position: relative;
+            border-radius: 2px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6b4c7a, #9b7cb6);
+            transition: width 0.5s ease;
+            border-radius: 2px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes brushStroke {
+            0% { opacity: 0; transform: scale(0.98) rotate(-0.5deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
+        .type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .type-item {
+            background: rgba(20, 15, 20, 0.6);
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #3a2a3a;
+            border-radius: 4px;
+        }
+
+        .type-item .code {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #9b7cb6;
+        }
+
+        .type-item .name {
+            font-size: 0.8rem;
+            color: #a090a0;
+            margin-top: 4px;
+        }
+
+        .type-item .desc {
+            font-size: 0.7rem;
+            color: #6b5b6b;
+            margin-top: 2px;
+            font-style: italic;
+        }
+
+        /* 分享图片预览 */
+        #shareCanvas {
+            display: none;
+            max-width: 100%;
+            margin: 15px auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .canvas-preview {
+            display: block !important;
+            max-width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px 12px 30px; }
+            .header { margin-bottom: 30px; }
+            .header h1 { font-size: 1.8rem; }
+            .intro-card, .question-card, .result-card { padding: 20px 15px; }
+            .type-grid { grid-template-columns: 1fr; gap: 8px; }
+            .share-buttons { flex-direction: column; }
+            .btn-secondary { width: 100%; margin: 5px 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>彼岸人格诊断</h1>
+            <p class="subtitle">Jenseits von Persönlichkeit</p>
+            <p class="nietzsche-quote">"当你凝视深渊时，深渊也在凝视你。但你不是深渊——你比深渊更廉价。"</p>
+        </div>
+
+        <!-- 介绍页 -->
+        <div id="intro" class="intro-card">
+            <p style="font-size: 1rem; line-height: 1.7; color: #b0a0b0; margin-bottom: 15px;">
+                <strong style="color: #e8d4f0;">上帝死了。</strong>而我们还活着——这是更大的悲剧。
+            </p>
+            <p style="font-size: 1rem; line-height: 1.7; color: #b0a0b0; margin-bottom: 15px;">
+                13道题目，带你穿越<strong>永恒轮回</strong>的幻觉，直面你的<strong>权力意志</strong>。
+            </p>
+            <p style="font-size: 0.9rem; line-height: 1.6; color: #8b7a8b; margin-bottom: 20px; font-style: italic;">
+                本测试献给所有未能成为超人的现代人。
+            </p>
+            <div class="type-grid">
+                <div class="type-item">
+                    <div class="code">SKLAVE</div>
+                    <div class="name">末人</div>
+                    <div class="desc">最后的人</div>
+                </div>
+                <div class="type-item">
+                    <div class="code">KAMEEL</div>
+                    <div class="name">骆驼</div>
+                    <div class="desc">重负承担者</div>
+                </div>
+                <div class="type-item">
+                    <div class="code">LOWE</div>
+                    <div class="name">狮子</div>
+                    <div class="desc">自由掠夺者</div>
+                </div>
+                <div class="type-item">
+                    <div class="code">KIND</div>
+                    <div class="name">孩子</div>
+                    <div class="desc">神圣的肯定</div>
+                </div>
+                <div class="type-item">
+                    <div class="code">SCHATTE</div>
+                    <div class="name">影子</div>
+                    <div class="desc">跟随的虚无</div>
+                </div>
+                <div class="type-item">
+                    <div class="code">MASCHINE</div>
+                    <div class="name">机器</div>
+                    <div class="desc">无情的齿轮</div>
+                </div>
+                <div class="type-item">
+                    <div class="code">HYSTERIE</div>
+                    <div class="name">酒神</div>
+                    <div class="desc">狂醉的混沌</div>
+                </div>
+                <div class="type-item">
+                    <div class="code">APOLLON</div>
+                    <div class="name">日神</div>
+                    <div class="desc">秩序的幻影</div>
+                </div>
+            </div>
+            <center><button class="btn" onclick="startTest()">开始永恒轮回</button></center>
+        </div>
+
+        <!-- 题目区域 -->
+        <div id="quiz" class="hidden">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div class="question-card">
+                <div class="question-number" id="questionNumber">问题 1 / 13</div>
+                <div class="question-text" id="questionText">题目加载中...</div>
+                <div id="optionsContainer"></div>
+            </div>
+        </div>
+
+        <!-- 结果区域 -->
+        <div id="result" class="result-card hidden">
+            <div class="result-type">
+                <div class="type-code" id="resultCode">TYPE</div>
+                <div class="type-name" id="resultName">结果名称</div>
+                <div class="type-sub" id="resultSub">副标题</div>
+            </div>
+            <div class="will-to-power">
+                <div class="label">权力意志诊断</div>
+                <div class="value" id="powerValue">诊断中...</div>
+            </div>
+            <div class="result-desc" id="resultDesc">结果描述</div>
+            <div class="result-quote" id="resultQuote">引用</div>
+
+            <!-- 分享区域 -->
+            <div class="share-section">
+                <div class="share-title">分享你的诊断结果</div>
+                <canvas id="shareCanvas" width="600" height="800"></canvas>
+                <div class="share-buttons">
+                    <button class="btn btn-secondary" onclick="copyResult()">📋 复制文案</button>
+                    <button class="btn btn-secondary" onclick="generateShareImage()">🎨 生成分享图</button>
+                    <button class="btn btn-secondary" onclick="shareToWechat()">💬 分享给好友</button>
+                </div>
+            </div>
+
+            <center><button class="btn" onclick="restartTest()">再次轮回</button></center>
+        </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // 显示 Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // 微信分享配置（需要后端支持签名，这里预留接口）
+        function initWechatShare() {
+            // 如果是微信环境，可以尝试调用微信JS-SDK
+            if (typeof WeixinJSBridge !== 'undefined') {
+                // 微信内置浏览器分享
+                document.addEventListener('WeixinJSBridgeReady', function() {
+                    // 分享到朋友圈
+                    WeixinJSBridge.on('menu:share:timeline', function() {
+                        shareToWechat();
+                    });
+                    // 分享给好友
+                    WeixinJSBridge.on('menu:share:appmessage', function() {
+                        shareToWechat();
+                    });
+                });
+            }
+        }
+
+        // 复制结果文案
+        function copyResult() {
+            const typeCode = document.getElementById('resultCode').textContent;
+            const typeName = document.getElementById('resultName').textContent;
+            const typeSub = document.getElementById('resultSub').textContent;
+            const quote = document.getElementById('resultQuote').textContent;
+
+            const shareText = `【彼岸人格诊断】\n\n我是 ${typeCode} - ${typeName}（${typeSub}）\n\n${quote}\n\n上帝死了，而我们还活着。测测你是什么人格：https://你的用户名.github.io/仓库名/`;
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showToast('文案已复制，去分享吧！');
+                }).catch(() => {
+                    fallbackCopy(shareText);
+                });
+            } else {
+                fallbackCopy(shareText);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            try {
+                document.execCommand('copy');
+                showToast('文案已复制，去分享吧！');
+            } catch (err) {
+                showToast('复制失败，请手动复制');
+            }
+
+            document.body.removeChild(textarea);
+        }
+
+        // 生成分享图片
+        function generateShareImage() {
+            const canvas = document.getElementById('shareCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const typeCode = document.getElementById('resultCode').textContent;
+            const typeName = document.getElementById('resultName').textContent;
+            const typeSub = document.getElementById('resultSub').textContent;
+            const powerValue = document.getElementById('powerValue').textContent;
+
+            // 绘制背景
+            const gradient = ctx.createLinearGradient(0, 0, 600, 800);
+            gradient.addColorStop(0, '#0f0a14');
+            gradient.addColorStop(0.5, '#1f1628');
+            gradient.addColorStop(1, '#2d1f2d');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 600, 800);
+
+            // 绘制边框
+            ctx.strokeStyle = '#9b7cb6';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(20, 20, 560, 760);
+
+            // 绘制装饰角
+            ctx.beginPath();
+            ctx.moveTo(20, 50);
+            ctx.lineTo(20, 20);
+            ctx.lineTo(50, 20);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(550, 20);
+            ctx.lineTo(580, 20);
+            ctx.lineTo(580, 50);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(20, 750);
+            ctx.lineTo(20, 780);
+            ctx.lineTo(50, 780);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(550, 780);
+            ctx.lineTo(580, 780);
+            ctx.lineTo(580, 750);
+            ctx.stroke();
+
+            // 标题
+            ctx.fillStyle = '#e8d4f0';
+            ctx.font = 'bold 36px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('彼岸人格诊断', 300, 100);
+
+            ctx.fillStyle = '#8b7355';
+            ctx.font = 'italic 18px serif';
+            ctx.fillText('Jenseits von Persönlichkeit', 300, 135);
+
+            // 分割线
+            ctx.strokeStyle = '#6b4c7a';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(100, 160);
+            ctx.lineTo(500, 160);
+            ctx.stroke();
+
+            // 结果代码
+            ctx.fillStyle = '#e8d4f0';
+            ctx.font = 'bold 72px serif';
+            ctx.fillText(typeCode, 300, 250);
+
+            // 结果名称
+            ctx.fillStyle = '#9b7cb6';
+            ctx.font = 'bold 42px serif';
+            ctx.fillText(typeName, 300, 310);
+
+            // 德语副标题
+            ctx.fillStyle = '#7a6a7a';
+            ctx.font = 'italic 24px serif';
+            ctx.fillText(typeSub, 300, 345);
+
+            // 权力意志诊断（简化）
+            ctx.fillStyle = '#8b7355';
+            ctx.font = '16px serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('权力意志诊断', 60, 400);
+
+            // 绘制多行文本
+            ctx.fillStyle = '#b0a0b0';
+            ctx.font = '18px serif';
+            const words = powerValue.substring(0, 100) + '...';
+            const maxWidth = 480;
+            const lineHeight = 28;
+            let x = 60;
+            let y = 435;
+
+            const lines = words.match(/.{1,28}/g) || [words];
+            lines.slice(0, 4).forEach(line => {
+                ctx.fillText(line, x, y);
+                y += lineHeight;
+            });
+
+            // 底部二维码提示区
+            ctx.fillStyle = '#4a3a4a';
+            ctx.fillRect(150, 650, 300, 100);
+
+            ctx.fillStyle = '#e8d4f0';
+            ctx.font = '20px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('扫码测试你的尼采人格', 300, 705);
+
+            // 显示 canvas
+            canvas.classList.add('canvas-preview');
+            showToast('长按上图保存分享！');
+
+            // 滚动到图片位置
+            canvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // 分享到微信
+        function shareToWechat() {
+            const isWechat = /MicroMessenger/i.test(navigator.userAgent);
+
+            if (isWechat) {
+                showToast('点击右上角「···」分享给朋友');
+            } else {
+                copyResult();
+                showToast('请手动分享到微信（文案已复制）');
+            }
+        }
+
+        const questions = [
+            {
+                text: "如果你的生命要无限次重复，每一次都完全一样——你会如何面对这永恒的轮回？",
+                options: [
+                    { text: "欣然接受，这是我的命运", type: "KIND", score: 3 },
+                    { text: "愤怒地对抗，宁可毁灭", type: "LOWE", score: 3 },
+                    { text: "默默承受，像背负十字架", type: "KAMEEL", score: 3 },
+                    { text: "我？轮回？我配吗", type: "SKLAVE", score: 3 }
+                ]
+            },
+            {
+                text: "清晨醒来，你的权力意志（Will to Power）告诉你：",
+                options: [
+                    { text: "今天也要创造价值，哪怕无人看见", type: "KIND", score: 3 },
+                    { text: "去征服，去掠夺，去说'我要'", type: "LOWE", score: 3 },
+                    { text: "Duty在召唤，责任重于一切", type: "KAMEEL", score: 3 },
+                    { text: "再睡五分钟，算了，睡一天吧", type: "SKLAVE", score: 3 }
+                ]
+            },
+            {
+                text: "面对'你应该'的重负，你会？",
+                options: [
+                    { text: "跪下，扛起它，说这是美德", type: "KAMEEL", score: 3 },
+                    { text: "怒吼'不！'然后摧毁它", type: "LOWE", score: 3 },
+                    { text: "无视它，创造新的价值", type: "KIND", score: 3 },
+                    { text: "我没有重负，因为我没有价值", type: "SCHATTE", score: 3 }
+                ]
+            },
+            {
+                text: "在一个派对上，你发现自己的存在方式是？",
+                options: [
+                    { text: "狂饮，跳舞，让酒神接管", type: "HYSTERIE", score: 3 },
+                    { text: "保持优雅，维持秩序的假象", type: "APOLLON", score: 3 },
+                    { text: "精确计算每一句话的最优解", type: "MASCHINE", score: 3 },
+                    { text: "站在角落，成为家具的一部分", type: "SCHATTE", score: 3 }
+                ]
+            },
+            {
+                text: "上帝死了。这对你的影响是？",
+                options: [
+                    { text: "无所谓，我从未信过他", type: "LOWE", score: 3 },
+                    { text: "兴奋！现在我可以创造新价值了", type: "KIND", score: 3 },
+                    { text: "恐慌，我需要新的偶像", type: "KAMEEL", score: 3 },
+                    { text: "早就知道，只是假装虔诚", type: "SKLAVE", score: 3 }
+                ]
+            },
+            {
+                text: "你的艺术/创作风格更接近？",
+                options: [
+                    { text: "醉酒的狂欢，无序的激情", type: "HYSTERIE", score: 3 },
+                    { text: "完美的形式，理性的美", type: "APOLLON", score: 3 },
+                    { text: "精确，高效，可复制", type: "MASCHINE", score: 3 },
+                    { text: "我没有创作，我只是搬运", type: "SCHATTE", score: 3 }
+                ]
+            },
+            {
+                text: "面对痛苦，你的反应是？",
+                options: [
+                    { text: "痛苦？什么痛苦？（已麻木）", type: "SKLAVE", score: 3 },
+                    { text: "将其转化为力量，越多越好", type: "KIND", score: 3 },
+                    { text: "分析它，理解它，控制它", type: "APOLLON", score: 3 },
+                    { text: "沉溺其中，让它吞噬我", type: "HYSTERIE", score: 3 }
+                ]
+            },
+            {
+                text: "如果可以获得超人的力量，但代价是孤独一生？",
+                options: [
+                    { text: "接受，孤独是超人的宿命", type: "KIND", score: 3 },
+                    { text: "犹豫，因为我需要观众", type: "APOLLON", score: 3 },
+                    { text: "拒绝，我要温暖而不是伟大", type: "SKLAVE", score: 3 },
+                    { text: "计算成本收益比...（机器故障）", type: "MASCHINE", score: 3 }
+                ]
+            },
+            {
+                text: "描述你的道德观：",
+                options: [
+                    { text: "善=有用，恶=无用（主人道德）", type: "LOWE", score: 3 },
+                    { text: "善=温顺，恶=强大（奴隶道德）", type: "KAMEEL", score: 3 },
+                    { text: "超越善恶，价值由我重估", type: "KIND", score: 3 },
+                    { text: "跟随大众，安全第一", type: "SKLAVE", score: 3 }
+                ]
+            },
+            {
+                text: "在永恒轮回中，你最害怕重复的是？",
+                options: [
+                    { text: "周一早晨的闹钟", type: "KAMEEL", score: 3 },
+                    { text: "假装快乐的社交", type: "APOLLON", score: 3 },
+                    { text: "失控的情绪爆发", type: "HYSTERIE", score: 3 },
+                    { text: "我的整个存在", type: "SKLAVE", score: 3 }
+                ]
+            },
+            {
+                text: "你的生命是一首？",
+                options: [
+                    { text: "精确的数学公式", type: "MASCHINE", score: 3 },
+                    { text: "无序的即兴爵士", type: "HYSTERIE", score: 3 },
+                    { text: "古典交响乐的和谐", type: "APOLLON", score: 3 },
+                    { text: "别人的背景音乐", type: "SCHATTE", score: 3 }
+                ]
+            },
+            {
+                text: "关于自由，你认为？",
+                options: [
+                    { text: "自由是创造新价值的权力", type: "KIND", score: 3 },
+                    { text: "自由是说不的权力", type: "LOWE", score: 3 },
+                    { text: "自由是沉重的负担", type: "KAMEEL", score: 3 },
+                    { text: "自由？我没有那种东西", type: "SKLAVE", score: 3 }
+                ]
+            },
+            {
+                text: "最后：如果这是永恒轮回的最后一次回答，你会？",
+                options: [
+                    { text: "大笑，然后说'再来一次'", type: "KIND", score: 3 },
+                    { text: "沉默，然后接受", type: "LOWE", score: 3 },
+                    { text: "哭泣，问为什么是我", type: "KAMEEL", score: 3 },
+                    { text: "无所谓，反正我不重要", type: "SKLAVE", score: 3 }
+                ]
+            }
+        ];
+
+        const results = {
+            SKLAVE: {
+                name: "末人",
+                sub: "Der Letzte Mensch",
+                power: "权力意志：几乎为零。你是温顺的羊群，舒适即美德，痛苦即邪恶。你发明'平等'来掩盖你的软弱。你问自己：'我们发明了幸福'——说完，你就眨眨眼，然后死去。",
+                desc: "尼采预言的最后的人。你不求超越，只求舒适。你没有深渊，因为你没有高度。你生活在'小小的快乐'中——微小的需求，微小的满足，微小的遗憾。你是历史的终点，但不是超人的起点。恭喜你，你是人类退化的完美形态。",
+                quote: "'他们白天有自己的小快乐，晚上也有自己的小快乐，但他们尊重健康。' —— 《查拉图斯特拉如是说》"
+            },
+            KAMEEL: {
+                name: "骆驼",
+                sub: "Das Kameel",
+                power: "权力意志：被压抑。你背负着'你应该'的重负，把责任当作荣耀。你的美德是忍耐，你的骄傲是承受。但你不知道，这重负正是你自己选择的——为了逃避'我要'的恐惧。",
+                desc: "精神的三段变形之第一阶段。你跪下来，说：'给我重担吧！'你把一切'你应该'都扛在背上——工作的责任，社会的期待，家庭的重担。你以为这是美德，却不知道这是在逃避创造自己的价值。你是最勤劳的奴隶，最顺从的承担者。",
+                quote: "'在沙漠里，精神想要变成骆驼，那负重最重的存在。' —— 《查拉图斯特拉如是说》"
+            },
+            LOWE: {
+                name: "狮子",
+                sub: "Der Löwe",
+                power: "权力意志：爆发状态。你说'不'，你反抗，你摧毁。你说'我要'，你掠夺，你征服。但你只是自由的掠夺者，不是价值的创造者。你的怒吼震耳欲聋，但你的创造空空如也。",
+                desc: "精神的三段变形之第二阶段。你不再背负重负，你反抗一切'你应该'。你是自由的，但这种自由是虚无的——你只是说了'不'，还没有说'我是'。你需要战斗来证明自己的存在，因为没有创造，你什么都不是。",
+                quote: "'谁要成为创造者，谁就必须先成为毁灭者，打破旧价值。' —— 《查拉图斯特拉如是说》"
+            },
+            KIND: {
+                name: "孩子",
+                sub: "Das Kind",
+                power: "权力意志：神圣的肯定。你不仅接受命运，你热爱它。你说'我是'，不是出于反抗，而是出于创造。你是无辜的遗忘，是一个新的开始，是一个游戏。",
+                desc: "精神的三段变形之第三阶段，也是最终阶段。你不再是骆驼（背负），不再是狮子（反抗），你是一个孩子——神圣的肯定。你创造新的价值，不是为了对抗旧价值，而是因为创造本身就是快乐。你是超人之前的最后一步，但你也是最难达到的一步。",
+                quote: "'孩子是天真与遗忘，是一个新的开始，是一个游戏，是一个自转的轮子，是一个最初的运动，是一个神圣的肯定。' —— 《查拉图斯特拉如是说》"
+            },
+            SCHATTE: {
+                name: "影子",
+                sub: "Der Schatten",
+                power: "权力意志：缺席。你没有自己的光，你只是反射他人的光芒。你跟随，你模仿，你依附。当光消失，你也消失。你的存在是为了证明他人的存在，而你自己的存在是一个错误。",
+                desc: "你是存在的附庸，是现实的影子。你没有自己的意志，你只是跟随。当查拉图斯特拉走进他的洞穴，你也跟了进去——但你不属于那里。你是虚无的化身，是缺席的呈现。最令人悲哀的是，你甚至不知道自己是一个影子。",
+                quote: "'我跟随你，是因为我什么都不是，而你是某种东西。' —— 影子对查拉图斯特拉说"
+            },
+            MASCHINE: {
+                name: "机器",
+                sub: "Die Maschine",
+                power: "权力意志：异化。你曾经是生命，现在你是齿轮。你精确，你高效，你无情。你不需要意义，你需要指令。你是现代人的终极形态——把自己变成工具，然后忘记自己是人。",
+                desc: "你是工业时代的产物，是理性的极端。你把生命变成算法，把情感变成数据。你的美德是精确，你的罪恶是失误。你已经杀死了酒神，你只相信阿波罗——但阿波罗也抛弃了你，因为你没有美，只有功能。你是末人的机械版。",
+                quote: "'机器，这个非人的抽象，正在把人也变成抽象。' —— 尼采的预言"
+            },
+            HYSTERIE: {
+                name: "酒神",
+                sub: "Der Dionysische",
+                power: "权力意志：混沌。你沉醉，你狂欢，你毁灭。你是生命的洪流，是创造的阵痛，是痛苦的狂喜。你没有边界，你是边界本身的崩溃。你是美丽的，因为你也是可怕的。",
+                desc: "你是酒神狄奥尼索斯的仆人。在醉意中，你体验到存在的本质——痛苦与狂喜是一体的。你打破形式，拥抱混沌。你创造，但你的创造是破坏性的；你毁灭，但你的毁灭是创造性的。你需要日神来约束你，否则你会燃烧殆尽。",
+                quote: "'存在与世界只有作为审美现象才是永恒合理的。' —— 《悲剧的诞生》"
+            },
+            APOLLON: {
+                name: "日神",
+                sub: "Der Apollinische",
+                power: "权力意志：形式。你用美来掩盖真理，用形式来驯服混沌。你是梦的世界，是表象的王国。你的秩序是保护，也是监狱。你逃避痛苦，用幻觉换取和平。",
+                desc: "你是太阳神阿波罗的信徒。你相信形式、比例、和谐。你用美来救赎存在——不是通过改变它，而是通过观看它。你的危险在于，你可能沉迷于表象，忘记了表象背后的混沌。你是艺术家的庇护神，但也是自欺者的守护神。",
+                quote: "'为了生存，我们需要谎言。' —— 日神智慧"
+            }
+        };
+
+        let currentQuestion = 0;
+        let scores = { SKLAVE: 0, KAMEEL: 0, LOWE: 0, KIND: 0, SCHATTE: 0, MASCHINE: 0, HYSTERIE: 0, APOLLON: 0 };
+
+        function startTest() {
+            document.getElementById('intro').classList.add('hidden');
+            document.getElementById('quiz').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('questionNumber').textContent = `问题 ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('questionText').textContent = q.text;
+            document.getElementById('progressFill').style.width = `${((currentQuestion) / questions.length) * 100}%`;
+
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option';
+                btn.textContent = opt.text;
+                btn.onclick = () => selectOption(opt);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectOption(option) {
+            scores[option.type] += option.score;
+
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz').classList.add('hidden');
+            document.getElementById('result').classList.remove('hidden');
+
+            let maxScore = 0;
+            let resultType = '';
+
+            for (const [type, score] of Object.entries(scores)) {
+                if (score > maxScore) {
+                    maxScore = score;
+                    resultType = type;
+                }
+            }
+
+            const result = results[resultType];
+            document.getElementById('resultCode').textContent = resultType;
+            document.getElementById('resultName').textContent = result.name;
+            document.getElementById('resultSub').textContent = result.sub;
+            document.getElementById('powerValue').textContent = result.power;
+            document.getElementById('resultDesc').textContent = result.desc;
+            document.getElementById('resultQuote').textContent = result.quote;
+
+            // 重置分享图
+            document.getElementById('shareCanvas').classList.remove('canvas-preview');
+
+            // 初始化微信分享
+            initWechatShare();
+        }
+
+        function restartTest() {
+            currentQuestion = 0;
+            scores = { SKLAVE: 0, KAMEEL: 0, LOWE: 0, KIND: 0, SCHATTE: 0, MASCHINE: 0, HYSTERIE: 0, APOLLON: 0 };
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('intro').classList.remove('hidden');
+            document.getElementById('shareCanvas').classList.remove('canvas-preview');
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initWechatShare();
+        });
+    </script>
+</body>
+</html>
